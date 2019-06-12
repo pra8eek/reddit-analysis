@@ -1,22 +1,8 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[3]:
-
-
 import bz2
 import json
 
-
-# In[4]:
-
-
 submissions = bz2.open('RS_2017-01.bz2')
 comments = bz2.open('RC_2017-01.bz2')
-
-
-# In[5]:
-
 
 def correction(e, x):
     try :
@@ -26,11 +12,7 @@ def correction(e, x):
         y = json.loads(x, strict = False)
         return y
     except Exception as e :
-        y = correction(e, x)        
-
-
-# In[6]:
-
+        y = correction(e, x)
 
 def JSONtoDict(x) :
     x = '{'+str(x)[3:-4]+'}'
@@ -40,10 +22,6 @@ def JSONtoDict(x) :
     except Exception as e :
         y = correction(e, x)
     return y
-
-
-# In[5]:
-
 
 def writeStart(f, submission) :
     f.write("<?xml version='1.0' encoding='utf-8'?>"+"\n")
@@ -56,20 +34,16 @@ def writeStart(f, submission) :
     f.write("\t\t\t</TimeStamp>"+"\n")
     f.write("\t\t\t<Contributors>"+"\n")
     f.write("\t\t\t\t<OwnerUserId>"+submission['author']+"</OwnerUserId> "+"\n")
-    f.write("\t\t\t</Contributors>"+"\n")  
+    f.write("\t\t\t</Contributors>"+"\n")
     f.write("\t\t\t<Body>"+"\n")
     f.write("\t\t\t\t<Text>"+"\n")
     f.write("\t\t\t\t\t"+submission['selftext']+"\n")
     f.write("\t\t\t\t</Text> "+"\n")
-    f.write("\t\t\t</Body>"+"\n")  
+    f.write("\t\t\t</Body>"+"\n")
     f.write("\t\t\t<Credit>"+"\n")
     f.write("\t\t\t\t<Score>"+str(submission['score'] if 'score' in submission else 0)+"</Score> "+"\n")
-    f.write("\t\t\t</Credit>"+"\n")   
+    f.write("\t\t\t</Credit>"+"\n")
     f.write('\t\t</Instance>'+"\n")
-
-
-# In[9]:
-
 
 def writeComment(f, comment, instance_id):
     f.write('\t\t<Instance Id= "'+str(instance_id)+'" InstanceType= "Comment">'+"\n")
@@ -89,19 +63,11 @@ def writeComment(f, comment, instance_id):
     f.write("\t\t\t</Credit>"+"\n")
     f.write('\t\t</Instance>'+"\n")
 
-
-# In[ ]:
-
-
 for submission in submissions :
     submission = JSONtoDict(submission)
     filename = './KnolML/'+submission['id'] + '.xml'
     file = open(filename,"w+")
     writeStart(file, submission)
-
-
-# In[ ]:
-
 
 for comment in comments :
     comment = JSONtoDict(comment)
@@ -113,10 +79,6 @@ for comment in comments :
         continue
     writeComment(file, comment, 0)
 
-
-# In[ ]:
-
-
 for submission in submissions :
     submission = JSONtoDict(submission)
     filename = './KnolML/'+submission['id'] + '.xml'
@@ -124,4 +86,3 @@ for submission in submissions :
     writeStart(file, submission)
     file.write('\t</KnowledgeData>'+"\n")
     file.write('</KnolML>')
-
