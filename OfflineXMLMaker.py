@@ -5,14 +5,16 @@ submissions = bz2.open('RS_2017-01.bz2')
 comments = bz2.open('RC_2017-01.bz2')
 
 def correction(e, x):
-    try :
-        e = str(e)[::-1]
-        e = int(e[1:e.index(' ')][::-1])
-        x = x[:e-3]+'"'+x[e-2:]
-        y = json.loads(x, strict = False)
-        return y
-    except Exception as e :
-        y = correction(e, x)
+    e = ""
+    while True :
+        try :
+            e = str(e)[::-1]
+            e = int(e[1:e.index(' ')][::-1])
+            x = x[:e-3]+'"'+x[e-2:]
+            y = json.loads(x, strict = False)
+            return y
+        except Exception as e :
+            continue
 
 def JSONtoDict(x) :
     x = '{'+str(x)[3:-4]+'}'
