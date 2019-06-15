@@ -5,7 +5,10 @@ import json
 
 file = bz2.open('RS_2017-01.bz2')
 
-def correction(e, x, y):
+def correction(e, x):
+    i = 0
+    if str(e).find("Expecting ',' delimiter:") != 0 :
+        return e
     try :
         e = str(e)[::-1]
         e = int(e[1:e.index(' ')][::-1])
@@ -13,7 +16,17 @@ def correction(e, x, y):
         y = json.loads(x, strict = False)
         return y
     except Exception as e :
-        y = correction(e, x, y)        
+        y = correction(e, x)        
+
+def JSONtoDict(x) :
+    x = '{'+str(x)[3:-4]+'}'
+    x = x.replace('\\\\"','').replace('\\','')
+    try :
+        y = json.loads(x, strict = False)
+    except Exception as e :
+        y = correction(e, x)
+    return y
+
 
 def writeStart(f, submission, instance_id) :
     f.write("<?xml version='1.0' encoding='utf-8'?>"+"\n")
@@ -56,15 +69,15 @@ def writeComment(f, comment, instance_id):
     f.write('\t\t</Instance>'+"\n")
 
 for line in file :
+
     instance_id = 1
-    x = '{'+str(line)[3:-4]+'}'
-    x = x.replace('\\\\"','').replace('\\','')
-    try :
-        submission = json.loads(x, strict = False)
-    except Exception as e :
-        submission = correction(e, x, y)
+    submission = JSONtoDict(submission)
     
-    filename = submission['id'] + '.xml'
+    try :
+    	filename = submission['id'] + '.xml'
+    except :
+		continue
+    
     f = open(filename,"w+")
     writeStart(f, submission, instance_id)
     
