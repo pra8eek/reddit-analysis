@@ -2,6 +2,7 @@ import bs4 as bs
 import urllib.request
 import bz2
 import json
+import time
 
 file = bz2.open('RS_2017-01.bz2')
 
@@ -68,15 +69,23 @@ def writeComment(f, comment, instance_id):
     f.write("\t\t\t</Credit>"+"\n")
     f.write('\t\t</Instance>'+"\n")
 
+i = 0
+t = time.time()
+
 for line in file :
 
+    i += 1
+	
+    if i%500 == 0 :
+        print(i,"submissions parsed in",time.time()-t,"seconds\n-----------------------------------------")
+
     instance_id = 1
-    submission = JSONtoDict(submission)
+    submission = JSONtoDict(line)
     
     try :
-    	filename = submission['id'] + '.xml'
+    	filename = "./ABC/" + submission['id'] + '.xml'
     except :
-		continue
+	    continue
     
     f = open(filename,"w+")
     writeStart(f, submission, instance_id)
